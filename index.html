@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>356a地图守护</title>
+</head>
+<body>
+    <h1>正在加载地图中</h1>
+
+    <script>
+        // Base64加密函数
+        function base64EncodeWithDot(input) {
+            const base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+            let output = '';
+            let i = 0;
+
+            // 将 . 替换为特定字符（如 -）
+            input = input.replace(/\./g, '-');
+
+            // 将输入转换为Base64
+            while (i < input.length) {
+                let char1 = input.charCodeAt(i++);
+                let char2 = i < input.length ? input.charCodeAt(i++) : NaN;
+                let char3 = i < input.length ? input.charCodeAt(i++) : NaN;
+
+                output += base64Chars.charAt(char1 >> 2);
+                output += base64Chars.charAt(((char1 & 3) << 4) | (char2 >> 4));
+                if (!isNaN(char2)) {
+                    output += base64Chars.charAt(((char2 & 15) << 2) | (char3 >> 6));
+                } else {
+                    output += '=';
+                }
+                if (!isNaN(char3)) {
+                    output += base64Chars.charAt(char3 & 63);
+                } else {
+                    output += '=';
+                }
+            }
+
+            return output;
+        }
+
+
+        // 获取用户的IP地址
+        fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+            const encryptedIP = base64EncodeWithDot(data.ip);
+            const params = new URLSearchParams(window.location.search)
+            const map_id = params.get('mapid');
+            // 重定向到目标网页，并附加加密的IP地址作为查询参数
+            const targetUrl = `https://dao3.fun/play/49d220144d24f97883e7?key=${encryptedIP}&mapid=${map_id}`;
+            window.location.href = targetUrl;
+            console.log(encryptedIP)
+        })
+        .catch(error => console.error('Error fetching IP:', error));
+    </script>
+</body>
+</html>
