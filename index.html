@@ -43,18 +43,17 @@
 
 
         // 获取用户的IP地址
-        fetch('https://api.ipify.org?format=json')
+        fetch('https://api.ipgeolocation.io/getip')
         .then(response => response.json())
+
         .then(data => {
             const encryptedIP = base64EncodeWithDot(data.ip);
-            const params = new URLSearchParams(window.location.search)
-            const map_id = params.get('mapid');
+
             // 重定向到目标网页，并附加加密的IP地址作为查询参数
-            const targetUrl = `https://dao3.fun/play/49d220144d24f97883e7?key=${encryptedIP}&mapid=${map_id}`;
+            const targetUrl = `https://dao3.fun/play/49d220144d24f97883e7?key=${encryptedIP}`;
             window.location.href = targetUrl;
             console.log(encryptedIP)
         })
-        .catch(error => console.error('Error fetching IP:', error));
     </script>
 </body>
 </html>
